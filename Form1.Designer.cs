@@ -268,6 +268,8 @@ namespace IGRF_Interface_Demo1._1
             this.plotViewX = new OxyPlot.WindowsForms.PlotView();
             this.tabPageMag = new System.Windows.Forms.TabPage();
             this.plotViewMag = new OxyPlot.WindowsForms.PlotView();
+            this.tabPageSensor2 = new System.Windows.Forms.TabPage();
+            this.plotViewSensor2 = new OxyPlot.WindowsForms.PlotView();
             this.panelQuickActions = new System.Windows.Forms.Panel();
             this.btnStartAllPid = new System.Windows.Forms.Button();
             this.btnStopAllPid = new System.Windows.Forms.Button();
@@ -291,6 +293,7 @@ namespace IGRF_Interface_Demo1._1
             this.tabControl2.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabPageMag.SuspendLayout();
+            this.tabPageSensor2.SuspendLayout();
             this.panelQuickActions.SuspendLayout();
             this.groupBox16.SuspendLayout();
             this.groupBox15.SuspendLayout();
@@ -341,7 +344,7 @@ namespace IGRF_Interface_Demo1._1
             this.groupBox4.Controls.Add(this.label7);
             this.groupBox4.Controls.Add(this.label6);
             this.groupBox4.Font = new System.Drawing.Font("Microsoft New Tai Lue", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox4.Location = new System.Drawing.Point(289, 324);
+            this.groupBox4.Location = new System.Drawing.Point(289, 420);
             this.groupBox4.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(4);
@@ -529,7 +532,7 @@ namespace IGRF_Interface_Demo1._1
             // 
             this.label40.AutoSize = true;
             this.label40.Font = new System.Drawing.Font("Microsoft New Tai Lue", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label40.Location = new System.Drawing.Point(287, 259);
+            this.label40.Location = new System.Drawing.Point(287, 355);
             this.label40.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label40.Name = "label40";
             this.label40.Size = new System.Drawing.Size(110, 21);
@@ -539,7 +542,7 @@ namespace IGRF_Interface_Demo1._1
             // SetSpeed_Btn
             // 
             this.SetSpeed_Btn.Font = new System.Drawing.Font("Microsoft New Tai Lue", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SetSpeed_Btn.Location = new System.Drawing.Point(284, 283);
+            this.SetSpeed_Btn.Location = new System.Drawing.Point(284, 379);
             this.SetSpeed_Btn.Margin = new System.Windows.Forms.Padding(2);
             this.SetSpeed_Btn.Name = "SetSpeed_Btn";
             this.SetSpeed_Btn.Size = new System.Drawing.Size(52, 28);
@@ -551,7 +554,7 @@ namespace IGRF_Interface_Demo1._1
             // SatPosReset
             // 
             this.SatPosReset.Font = new System.Drawing.Font("Microsoft JhengHei UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SatPosReset.Location = new System.Drawing.Point(345, 282);
+            this.SatPosReset.Location = new System.Drawing.Point(345, 378);
             this.SatPosReset.Margin = new System.Windows.Forms.Padding(2);
             this.SatPosReset.Name = "SatPosReset";
             this.SatPosReset.Size = new System.Drawing.Size(66, 28);
@@ -564,7 +567,7 @@ namespace IGRF_Interface_Demo1._1
             // 
             this.speed.AutoSize = true;
             this.speed.Font = new System.Drawing.Font("Microsoft New Tai Lue", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.speed.Location = new System.Drawing.Point(456, 212);
+            this.speed.Location = new System.Drawing.Point(456, 308);
             this.speed.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.speed.Name = "speed";
             this.speed.Size = new System.Drawing.Size(21, 25);
@@ -575,7 +578,7 @@ namespace IGRF_Interface_Demo1._1
             // 
             this.label39.AutoSize = true;
             this.label39.Font = new System.Drawing.Font("Microsoft New Tai Lue", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label39.Location = new System.Drawing.Point(290, 188);
+            this.label39.Location = new System.Drawing.Point(290, 284);
             this.label39.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label39.Name = "label39";
             this.label39.Size = new System.Drawing.Size(146, 21);
@@ -585,7 +588,7 @@ namespace IGRF_Interface_Demo1._1
             // TimeSpeed
             // 
             this.TimeSpeed.LargeChange = 60;
-            this.TimeSpeed.Location = new System.Drawing.Point(276, 211);
+            this.TimeSpeed.Location = new System.Drawing.Point(276, 307);
             this.TimeSpeed.Margin = new System.Windows.Forms.Padding(2);
             this.TimeSpeed.Maximum = 600;
             this.TimeSpeed.Minimum = -600;
@@ -631,9 +634,9 @@ namespace IGRF_Interface_Demo1._1
             this.groupSensor2.Controls.Add(this.lblSensor2Total);
             this.groupSensor2.Controls.Add(this.textSensor2Total);
             this.groupSensor2.Font = new System.Drawing.Font("Microsoft Tai Le", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupSensor2.Location = new System.Drawing.Point(283, 190);
+            this.groupSensor2.Location = new System.Drawing.Point(283, 188);
             this.groupSensor2.Name = "groupSensor2";
-            this.groupSensor2.Size = new System.Drawing.Size(306, 130);
+            this.groupSensor2.Size = new System.Drawing.Size(306, 92);
             this.groupSensor2.TabIndex = 86;
             this.groupSensor2.TabStop = false;
             this.groupSensor2.Text = "Sensor 2 (Magson)";
@@ -641,27 +644,27 @@ namespace IGRF_Interface_Demo1._1
             // txtSensor2Ip
             //
             this.txtSensor2Ip.Font = new System.Drawing.Font("Microsoft Tai Le", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSensor2Ip.Location = new System.Drawing.Point(6, 28);
+            this.txtSensor2Ip.Location = new System.Drawing.Point(6, 24);
             this.txtSensor2Ip.Name = "txtSensor2Ip";
-            this.txtSensor2Ip.Size = new System.Drawing.Size(140, 25);
+            this.txtSensor2Ip.Size = new System.Drawing.Size(120, 25);
             this.txtSensor2Ip.TabIndex = 0;
             this.txtSensor2Ip.Text = "192.168.1.100";
             //
             // txtSensor2Port
             //
             this.txtSensor2Port.Font = new System.Drawing.Font("Microsoft Tai Le", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSensor2Port.Location = new System.Drawing.Point(150, 28);
+            this.txtSensor2Port.Location = new System.Drawing.Point(130, 24);
             this.txtSensor2Port.Name = "txtSensor2Port";
-            this.txtSensor2Port.Size = new System.Drawing.Size(55, 25);
+            this.txtSensor2Port.Size = new System.Drawing.Size(50, 25);
             this.txtSensor2Port.TabIndex = 1;
             this.txtSensor2Port.Text = "12345";
             //
             // btnConnectSensor2
             //
             this.btnConnectSensor2.Font = new System.Drawing.Font("Microsoft New Tai Lue", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnConnectSensor2.Location = new System.Drawing.Point(210, 28);
+            this.btnConnectSensor2.Location = new System.Drawing.Point(186, 23);
             this.btnConnectSensor2.Name = "btnConnectSensor2";
-            this.btnConnectSensor2.Size = new System.Drawing.Size(90, 26);
+            this.btnConnectSensor2.Size = new System.Drawing.Size(114, 26);
             this.btnConnectSensor2.TabIndex = 2;
             this.btnConnectSensor2.Text = "▶ Connect";
             this.btnConnectSensor2.UseVisualStyleBackColor = true;
@@ -671,7 +674,7 @@ namespace IGRF_Interface_Demo1._1
             //
             this.lblSensor2X.AutoSize = true;
             this.lblSensor2X.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSensor2X.Location = new System.Drawing.Point(6, 65);
+            this.lblSensor2X.Location = new System.Drawing.Point(6, 63);
             this.lblSensor2X.Name = "lblSensor2X";
             this.lblSensor2X.Size = new System.Drawing.Size(14, 18);
             this.lblSensor2X.TabIndex = 3;
@@ -680,10 +683,10 @@ namespace IGRF_Interface_Demo1._1
             // textSensor2X
             //
             this.textSensor2X.Font = new System.Drawing.Font("Microsoft New Tai Lue", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textSensor2X.Location = new System.Drawing.Point(24, 62);
+            this.textSensor2X.Location = new System.Drawing.Point(20, 60);
             this.textSensor2X.Name = "textSensor2X";
             this.textSensor2X.ReadOnly = true;
-            this.textSensor2X.Size = new System.Drawing.Size(62, 25);
+            this.textSensor2X.Size = new System.Drawing.Size(48, 25);
             this.textSensor2X.TabIndex = 4;
             this.textSensor2X.Text = "0";
             //
@@ -691,7 +694,7 @@ namespace IGRF_Interface_Demo1._1
             //
             this.lblSensor2Y.AutoSize = true;
             this.lblSensor2Y.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSensor2Y.Location = new System.Drawing.Point(104, 65);
+            this.lblSensor2Y.Location = new System.Drawing.Point(78, 63);
             this.lblSensor2Y.Name = "lblSensor2Y";
             this.lblSensor2Y.Size = new System.Drawing.Size(15, 18);
             this.lblSensor2Y.TabIndex = 5;
@@ -700,10 +703,10 @@ namespace IGRF_Interface_Demo1._1
             // textSensor2Y
             //
             this.textSensor2Y.Font = new System.Drawing.Font("Microsoft New Tai Lue", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textSensor2Y.Location = new System.Drawing.Point(122, 62);
+            this.textSensor2Y.Location = new System.Drawing.Point(92, 60);
             this.textSensor2Y.Name = "textSensor2Y";
             this.textSensor2Y.ReadOnly = true;
-            this.textSensor2Y.Size = new System.Drawing.Size(62, 25);
+            this.textSensor2Y.Size = new System.Drawing.Size(48, 25);
             this.textSensor2Y.TabIndex = 6;
             this.textSensor2Y.Text = "0";
             //
@@ -711,7 +714,7 @@ namespace IGRF_Interface_Demo1._1
             //
             this.lblSensor2Z.AutoSize = true;
             this.lblSensor2Z.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSensor2Z.Location = new System.Drawing.Point(202, 65);
+            this.lblSensor2Z.Location = new System.Drawing.Point(150, 63);
             this.lblSensor2Z.Name = "lblSensor2Z";
             this.lblSensor2Z.Size = new System.Drawing.Size(15, 18);
             this.lblSensor2Z.TabIndex = 7;
@@ -720,10 +723,10 @@ namespace IGRF_Interface_Demo1._1
             // textSensor2Z
             //
             this.textSensor2Z.Font = new System.Drawing.Font("Microsoft New Tai Lue", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textSensor2Z.Location = new System.Drawing.Point(220, 62);
+            this.textSensor2Z.Location = new System.Drawing.Point(164, 60);
             this.textSensor2Z.Name = "textSensor2Z";
             this.textSensor2Z.ReadOnly = true;
-            this.textSensor2Z.Size = new System.Drawing.Size(62, 25);
+            this.textSensor2Z.Size = new System.Drawing.Size(48, 25);
             this.textSensor2Z.TabIndex = 8;
             this.textSensor2Z.Text = "0";
             //
@@ -731,19 +734,19 @@ namespace IGRF_Interface_Demo1._1
             //
             this.lblSensor2Total.AutoSize = true;
             this.lblSensor2Total.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSensor2Total.Location = new System.Drawing.Point(6, 98);
+            this.lblSensor2Total.Location = new System.Drawing.Point(218, 63);
             this.lblSensor2Total.Name = "lblSensor2Total";
             this.lblSensor2Total.Size = new System.Drawing.Size(60, 18);
             this.lblSensor2Total.TabIndex = 9;
-            this.lblSensor2Total.Text = "|B| (nT)";
+            this.lblSensor2Total.Text = "|B|";
             //
             // textSensor2Total
             //
             this.textSensor2Total.Font = new System.Drawing.Font("Microsoft New Tai Lue", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textSensor2Total.Location = new System.Drawing.Point(70, 95);
+            this.textSensor2Total.Location = new System.Drawing.Point(246, 60);
             this.textSensor2Total.Name = "textSensor2Total";
             this.textSensor2Total.ReadOnly = true;
-            this.textSensor2Total.Size = new System.Drawing.Size(90, 25);
+            this.textSensor2Total.Size = new System.Drawing.Size(54, 25);
             this.textSensor2Total.TabIndex = 10;
             this.textSensor2Total.Text = "0";
             //
@@ -1155,7 +1158,7 @@ namespace IGRF_Interface_Demo1._1
             // TimeSim_label
             // 
             this.TimeSim_label.AutoSize = true;
-            this.TimeSim_label.Location = new System.Drawing.Point(433, 264);
+            this.TimeSim_label.Location = new System.Drawing.Point(433, 360);
             this.TimeSim_label.Name = "TimeSim_label";
             this.TimeSim_label.Size = new System.Drawing.Size(31, 13);
             this.TimeSim_label.TabIndex = 92;
@@ -1175,7 +1178,7 @@ namespace IGRF_Interface_Demo1._1
             this.groupBox5.Controls.Add(this.Write_Btn);
             this.groupBox5.Controls.Add(this.label15);
             this.groupBox5.Controls.Add(this.Name_Txb);
-            this.groupBox5.Location = new System.Drawing.Point(275, 654);
+            this.groupBox5.Location = new System.Drawing.Point(275, 750);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(316, 177);
             this.groupBox5.TabIndex = 91;
@@ -1290,7 +1293,7 @@ namespace IGRF_Interface_Demo1._1
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textSpeed.Font = new System.Drawing.Font("Microsoft New Tai Lue", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textSpeed.Location = new System.Drawing.Point(476, 212);
+            this.textSpeed.Location = new System.Drawing.Point(476, 308);
             this.textSpeed.Margin = new System.Windows.Forms.Padding(2);
             this.textSpeed.Name = "textSpeed";
             this.textSpeed.Size = new System.Drawing.Size(78, 28);
@@ -1459,6 +1462,7 @@ namespace IGRF_Interface_Demo1._1
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl2.Controls.Add(this.tabPage4);
             this.tabControl2.Controls.Add(this.tabPageMag);
+            this.tabControl2.Controls.Add(this.tabPageSensor2);
             this.tabControl2.Location = new System.Drawing.Point(3, 64);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
@@ -1511,6 +1515,30 @@ namespace IGRF_Interface_Demo1._1
             this.plotViewMag.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotViewMag.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotViewMag.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            //
+            // tabPageSensor2
+            //
+            this.tabPageSensor2.Controls.Add(this.plotViewSensor2);
+            this.tabPageSensor2.Location = new System.Drawing.Point(4, 30);
+            this.tabPageSensor2.Name = "tabPageSensor2";
+            this.tabPageSensor2.Size = new System.Drawing.Size(1017, 812);
+            this.tabPageSensor2.TabIndex = 212;
+            this.tabPageSensor2.Text = "Sensor 2";
+            this.tabPageSensor2.UseVisualStyleBackColor = true;
+            //
+            // plotViewSensor2
+            //
+            this.plotViewSensor2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.plotViewSensor2.Location = new System.Drawing.Point(0, 0);
+            this.plotViewSensor2.Margin = new System.Windows.Forms.Padding(2);
+            this.plotViewSensor2.Name = "plotViewSensor2";
+            this.plotViewSensor2.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotViewSensor2.Size = new System.Drawing.Size(1017, 812);
+            this.plotViewSensor2.TabIndex = 213;
+            this.plotViewSensor2.Text = "plotViewSensor2";
+            this.plotViewSensor2.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotViewSensor2.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotViewSensor2.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             //
             // groupBox16
             // 
@@ -3179,6 +3207,7 @@ namespace IGRF_Interface_Demo1._1
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
             this.tabPageMag.ResumeLayout(false);
+            this.tabPageSensor2.ResumeLayout(false);
             this.panelQuickActions.ResumeLayout(false);
             this.panelQuickActions.PerformLayout();
             this.groupBox16.ResumeLayout(false);
@@ -3295,6 +3324,8 @@ namespace IGRF_Interface_Demo1._1
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TabPage tabPageMag;
         private OxyPlot.WindowsForms.PlotView plotViewMag;
+        private System.Windows.Forms.TabPage tabPageSensor2;
+        private OxyPlot.WindowsForms.PlotView plotViewSensor2;
         private System.Windows.Forms.Panel panelQuickActions;
         private System.Windows.Forms.Button btnStartAllPid;
         private System.Windows.Forms.Button btnStopAllPid;

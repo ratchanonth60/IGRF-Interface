@@ -50,6 +50,7 @@ namespace IGRF_Interface_Demo1._1
 
         private GraphManager _graphX, _graphY, _graphZ;
         private GraphManager _graphMag;
+        private MultiGraphManager _graphSensor2;
         private readonly PidController _pidX = new PidController();
         private readonly PidController _pidY = new PidController();
         private readonly PidController _pidZ = new PidController();
@@ -125,6 +126,8 @@ namespace IGRF_Interface_Demo1._1
                 _graphY = new GraphManager(plotViewY, "PID Y-Axis");
                 _graphZ = new GraphManager(plotViewZ, "PID Z-Axis");
                 _graphMag = new GraphManager(plotViewMag, "Field Magnitude |B|");
+                _graphSensor2 = new MultiGraphManager(plotViewSensor2, "Sensor 2 (Magson)",
+                    ("X", OxyColors.Red), ("Y", OxyColors.Green), ("Z", OxyColors.Blue), ("|B|", OxyColors.Black));
 
                 // Init Events
                 _sensorManager.OnPacketReceived += HandleSensorPacket;
@@ -350,6 +353,8 @@ namespace IGRF_Interface_Demo1._1
 
                     double total = Math.Sqrt(bx * bx + by * by + bz * bz);
                     textSensor2Total.Text = total.ToString("F2");
+
+                    _graphSensor2?.Update(bx, by, bz, total);
                 }));
             }
         }
@@ -1353,7 +1358,7 @@ namespace IGRF_Interface_Demo1._1
         private void tbx5_TextChanged(object sender, EventArgs e) { }
         private void timer_sensor_Tick(object sender, EventArgs e) { if (_sensorManager.IsOpen && !_sensorManager.IsSensorReady) try { _sensorManager.Write(new byte[] { 0x2A, 0x30, 0x30, 0x57, 0x45, 0x0D }); } catch { } } //0x2A, 0x30, 0x30, 0x57, 0x45, 0x0D
         private void cboControllerPort_SelectedIndexChanged(object sender, EventArgs e) { }
-        private void btnMasterReset_Click(object sender, EventArgs e) { _graphX?.Clear(); _graphY?.Clear(); _graphZ?.Clear(); _graphMag?.Clear(); _pidX.Reset(); _pidY.Reset(); _pidZ.Reset(); _calcService.ResetFilters(); MessageBox.Show("System Reset!"); }
+        private void btnMasterReset_Click(object sender, EventArgs e) { _graphX?.Clear(); _graphY?.Clear(); _graphZ?.Clear(); _graphMag?.Clear(); _graphSensor2?.Clear(); _pidX.Reset(); _pidY.Reset(); _pidZ.Reset(); _calcService.ResetFilters(); MessageBox.Show("System Reset!"); }
         private void btnResetKF_X_Click(object sender, EventArgs e) { _calcService.ResetFilterX(); debug_label_rx.Text = "Filter X reset"; }
         private void btnResetKF_Y_Click(object sender, EventArgs e) { _calcService.ResetFilterY(); debug_label_rx.Text = "Filter Y reset"; }
         private void btnResetKF_Z_Click(object sender, EventArgs e) { _calcService.ResetFilterZ(); debug_label_rx.Text = "Filter Z reset"; }
