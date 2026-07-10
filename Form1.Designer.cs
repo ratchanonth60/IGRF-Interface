@@ -67,6 +67,18 @@ namespace IGRF_Interface_Demo1._1
             this.ZerorizeBtn = new System.Windows.Forms.Button();
             this.ConnectSensor = new System.Windows.Forms.Button();
             this.SendBtn = new System.Windows.Forms.Button();
+            this.groupSensor2 = new System.Windows.Forms.GroupBox();
+            this.txtSensor2Ip = new System.Windows.Forms.TextBox();
+            this.txtSensor2Port = new System.Windows.Forms.TextBox();
+            this.btnConnectSensor2 = new System.Windows.Forms.Button();
+            this.lblSensor2X = new System.Windows.Forms.Label();
+            this.textSensor2X = new System.Windows.Forms.TextBox();
+            this.lblSensor2Y = new System.Windows.Forms.Label();
+            this.textSensor2Y = new System.Windows.Forms.TextBox();
+            this.lblSensor2Z = new System.Windows.Forms.Label();
+            this.textSensor2Z = new System.Windows.Forms.TextBox();
+            this.lblSensor2Total = new System.Windows.Forms.Label();
+            this.textSensor2Total = new System.Windows.Forms.TextBox();
             this.tbxLon = new System.Windows.Forms.TextBox();
             this.tbxLat = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -256,10 +268,19 @@ namespace IGRF_Interface_Demo1._1
             this.plotViewX = new OxyPlot.WindowsForms.PlotView();
             this.tabPageMag = new System.Windows.Forms.TabPage();
             this.plotViewMag = new OxyPlot.WindowsForms.PlotView();
+            this.panelQuickActions = new System.Windows.Forms.Panel();
+            this.btnStartAllPid = new System.Windows.Forms.Button();
+            this.btnStopAllPid = new System.Windows.Forms.Button();
+            this.btnApplyPidAll = new System.Windows.Forms.Button();
+            this.btnResetGraphs = new System.Windows.Forms.Button();
+            this.lblSensorStatus = new System.Windows.Forms.Label();
+            this.lblControllerStatus = new System.Windows.Forms.Label();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TimeSpeed)).BeginInit();
             this.groupBox8.SuspendLayout();
+            this.groupSensor2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -270,6 +291,7 @@ namespace IGRF_Interface_Demo1._1
             this.tabControl2.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabPageMag.SuspendLayout();
+            this.panelQuickActions.SuspendLayout();
             this.groupBox16.SuspendLayout();
             this.groupBox15.SuspendLayout();
             this.groupBox17.SuspendLayout();
@@ -593,7 +615,138 @@ namespace IGRF_Interface_Demo1._1
             this.groupBox8.TabIndex = 13;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Sensor";
-            // 
+            //
+            // groupSensor2
+            //
+            this.groupSensor2.BackColor = System.Drawing.Color.Transparent;
+            this.groupSensor2.Controls.Add(this.txtSensor2Ip);
+            this.groupSensor2.Controls.Add(this.txtSensor2Port);
+            this.groupSensor2.Controls.Add(this.btnConnectSensor2);
+            this.groupSensor2.Controls.Add(this.lblSensor2X);
+            this.groupSensor2.Controls.Add(this.textSensor2X);
+            this.groupSensor2.Controls.Add(this.lblSensor2Y);
+            this.groupSensor2.Controls.Add(this.textSensor2Y);
+            this.groupSensor2.Controls.Add(this.lblSensor2Z);
+            this.groupSensor2.Controls.Add(this.textSensor2Z);
+            this.groupSensor2.Controls.Add(this.lblSensor2Total);
+            this.groupSensor2.Controls.Add(this.textSensor2Total);
+            this.groupSensor2.Font = new System.Drawing.Font("Microsoft Tai Le", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupSensor2.Location = new System.Drawing.Point(283, 190);
+            this.groupSensor2.Name = "groupSensor2";
+            this.groupSensor2.Size = new System.Drawing.Size(306, 130);
+            this.groupSensor2.TabIndex = 86;
+            this.groupSensor2.TabStop = false;
+            this.groupSensor2.Text = "Sensor 2 (Magson)";
+            //
+            // txtSensor2Ip
+            //
+            this.txtSensor2Ip.Font = new System.Drawing.Font("Microsoft Tai Le", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSensor2Ip.Location = new System.Drawing.Point(6, 28);
+            this.txtSensor2Ip.Name = "txtSensor2Ip";
+            this.txtSensor2Ip.Size = new System.Drawing.Size(140, 25);
+            this.txtSensor2Ip.TabIndex = 0;
+            this.txtSensor2Ip.Text = "192.168.1.100";
+            //
+            // txtSensor2Port
+            //
+            this.txtSensor2Port.Font = new System.Drawing.Font("Microsoft Tai Le", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSensor2Port.Location = new System.Drawing.Point(150, 28);
+            this.txtSensor2Port.Name = "txtSensor2Port";
+            this.txtSensor2Port.Size = new System.Drawing.Size(55, 25);
+            this.txtSensor2Port.TabIndex = 1;
+            this.txtSensor2Port.Text = "12345";
+            //
+            // btnConnectSensor2
+            //
+            this.btnConnectSensor2.Font = new System.Drawing.Font("Microsoft New Tai Lue", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnConnectSensor2.Location = new System.Drawing.Point(210, 28);
+            this.btnConnectSensor2.Name = "btnConnectSensor2";
+            this.btnConnectSensor2.Size = new System.Drawing.Size(90, 26);
+            this.btnConnectSensor2.TabIndex = 2;
+            this.btnConnectSensor2.Text = "▶ Connect";
+            this.btnConnectSensor2.UseVisualStyleBackColor = true;
+            this.btnConnectSensor2.Click += new System.EventHandler(this.btnConnectSensor2_Click);
+            //
+            // lblSensor2X
+            //
+            this.lblSensor2X.AutoSize = true;
+            this.lblSensor2X.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSensor2X.Location = new System.Drawing.Point(6, 65);
+            this.lblSensor2X.Name = "lblSensor2X";
+            this.lblSensor2X.Size = new System.Drawing.Size(14, 18);
+            this.lblSensor2X.TabIndex = 3;
+            this.lblSensor2X.Text = "X";
+            //
+            // textSensor2X
+            //
+            this.textSensor2X.Font = new System.Drawing.Font("Microsoft New Tai Lue", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textSensor2X.Location = new System.Drawing.Point(24, 62);
+            this.textSensor2X.Name = "textSensor2X";
+            this.textSensor2X.ReadOnly = true;
+            this.textSensor2X.Size = new System.Drawing.Size(62, 25);
+            this.textSensor2X.TabIndex = 4;
+            this.textSensor2X.Text = "0";
+            //
+            // lblSensor2Y
+            //
+            this.lblSensor2Y.AutoSize = true;
+            this.lblSensor2Y.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSensor2Y.Location = new System.Drawing.Point(104, 65);
+            this.lblSensor2Y.Name = "lblSensor2Y";
+            this.lblSensor2Y.Size = new System.Drawing.Size(15, 18);
+            this.lblSensor2Y.TabIndex = 5;
+            this.lblSensor2Y.Text = "Y";
+            //
+            // textSensor2Y
+            //
+            this.textSensor2Y.Font = new System.Drawing.Font("Microsoft New Tai Lue", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textSensor2Y.Location = new System.Drawing.Point(122, 62);
+            this.textSensor2Y.Name = "textSensor2Y";
+            this.textSensor2Y.ReadOnly = true;
+            this.textSensor2Y.Size = new System.Drawing.Size(62, 25);
+            this.textSensor2Y.TabIndex = 6;
+            this.textSensor2Y.Text = "0";
+            //
+            // lblSensor2Z
+            //
+            this.lblSensor2Z.AutoSize = true;
+            this.lblSensor2Z.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSensor2Z.Location = new System.Drawing.Point(202, 65);
+            this.lblSensor2Z.Name = "lblSensor2Z";
+            this.lblSensor2Z.Size = new System.Drawing.Size(15, 18);
+            this.lblSensor2Z.TabIndex = 7;
+            this.lblSensor2Z.Text = "Z";
+            //
+            // textSensor2Z
+            //
+            this.textSensor2Z.Font = new System.Drawing.Font("Microsoft New Tai Lue", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textSensor2Z.Location = new System.Drawing.Point(220, 62);
+            this.textSensor2Z.Name = "textSensor2Z";
+            this.textSensor2Z.ReadOnly = true;
+            this.textSensor2Z.Size = new System.Drawing.Size(62, 25);
+            this.textSensor2Z.TabIndex = 8;
+            this.textSensor2Z.Text = "0";
+            //
+            // lblSensor2Total
+            //
+            this.lblSensor2Total.AutoSize = true;
+            this.lblSensor2Total.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSensor2Total.Location = new System.Drawing.Point(6, 98);
+            this.lblSensor2Total.Name = "lblSensor2Total";
+            this.lblSensor2Total.Size = new System.Drawing.Size(60, 18);
+            this.lblSensor2Total.TabIndex = 9;
+            this.lblSensor2Total.Text = "|B| (nT)";
+            //
+            // textSensor2Total
+            //
+            this.textSensor2Total.Font = new System.Drawing.Font("Microsoft New Tai Lue", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textSensor2Total.Location = new System.Drawing.Point(70, 95);
+            this.textSensor2Total.Name = "textSensor2Total";
+            this.textSensor2Total.ReadOnly = true;
+            this.textSensor2Total.Size = new System.Drawing.Size(90, 25);
+            this.textSensor2Total.TabIndex = 10;
+            this.textSensor2Total.Text = "0";
+            //
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft New Tai Lue", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -980,6 +1133,7 @@ namespace IGRF_Interface_Demo1._1
             this.btnRefreshPorts1.Controls.Add(this.textSpeed);
             this.btnRefreshPorts1.Controls.Add(this.groupBox4);
             this.btnRefreshPorts1.Controls.Add(this.groupBox8);
+            this.btnRefreshPorts1.Controls.Add(this.groupSensor2);
             this.btnRefreshPorts1.Controls.Add(this.label40);
             this.btnRefreshPorts1.Controls.Add(this.groupBox2);
             this.btnRefreshPorts1.Controls.Add(this.tbxCal);
@@ -1198,7 +1352,8 @@ namespace IGRF_Interface_Demo1._1
             this.plotViewInt2.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // tabPage3
-            // 
+            //
+            this.tabPage3.Controls.Add(this.panelQuickActions);
             this.tabPage3.Controls.Add(this.tabControl2);
             this.tabPage3.Location = new System.Drawing.Point(4, 30);
             this.tabPage3.Margin = new System.Windows.Forms.Padding(2);
@@ -1207,21 +1362,110 @@ namespace IGRF_Interface_Demo1._1
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Control.";
             this.tabPage3.UseVisualStyleBackColor = true;
-            // 
+            //
+            // panelQuickActions
+            //
+            this.panelQuickActions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelQuickActions.Controls.Add(this.btnStartAllPid);
+            this.panelQuickActions.Controls.Add(this.btnStopAllPid);
+            this.panelQuickActions.Controls.Add(this.btnApplyPidAll);
+            this.panelQuickActions.Controls.Add(this.btnResetGraphs);
+            this.panelQuickActions.Controls.Add(this.lblSensorStatus);
+            this.panelQuickActions.Controls.Add(this.lblControllerStatus);
+            this.panelQuickActions.Location = new System.Drawing.Point(3, 3);
+            this.panelQuickActions.Name = "panelQuickActions";
+            this.panelQuickActions.Size = new System.Drawing.Size(1025, 58);
+            this.panelQuickActions.TabIndex = 212;
+            //
+            // btnStartAllPid
+            //
+            this.btnStartAllPid.BackColor = System.Drawing.Color.LightGreen;
+            this.btnStartAllPid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnStartAllPid.Font = new System.Drawing.Font("Microsoft New Tai Lue", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnStartAllPid.Location = new System.Drawing.Point(8, 7);
+            this.btnStartAllPid.Name = "btnStartAllPid";
+            this.btnStartAllPid.Size = new System.Drawing.Size(150, 44);
+            this.btnStartAllPid.TabIndex = 213;
+            this.btnStartAllPid.Text = "▶ Start All PID";
+            this.btnStartAllPid.UseVisualStyleBackColor = false;
+            this.btnStartAllPid.Click += new System.EventHandler(this.btnStartAllPid_Click);
+            //
+            // btnStopAllPid
+            //
+            this.btnStopAllPid.BackColor = System.Drawing.Color.Salmon;
+            this.btnStopAllPid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnStopAllPid.Font = new System.Drawing.Font("Microsoft New Tai Lue", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnStopAllPid.Location = new System.Drawing.Point(166, 7);
+            this.btnStopAllPid.Name = "btnStopAllPid";
+            this.btnStopAllPid.Size = new System.Drawing.Size(120, 44);
+            this.btnStopAllPid.TabIndex = 214;
+            this.btnStopAllPid.Text = "⏹ Stop All";
+            this.btnStopAllPid.UseVisualStyleBackColor = false;
+            this.btnStopAllPid.Click += new System.EventHandler(this.btnStopAllPid_Click);
+            //
+            // btnApplyPidAll
+            //
+            this.btnApplyPidAll.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.btnApplyPidAll.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnApplyPidAll.Font = new System.Drawing.Font("Microsoft New Tai Lue", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnApplyPidAll.Location = new System.Drawing.Point(294, 7);
+            this.btnApplyPidAll.Name = "btnApplyPidAll";
+            this.btnApplyPidAll.Size = new System.Drawing.Size(130, 44);
+            this.btnApplyPidAll.TabIndex = 215;
+            this.btnApplyPidAll.Text = "Apply PID All";
+            this.btnApplyPidAll.UseVisualStyleBackColor = false;
+            this.btnApplyPidAll.Click += new System.EventHandler(this.btnApplyPidAll_Click);
+            //
+            // btnResetGraphs
+            //
+            this.btnResetGraphs.BackColor = System.Drawing.Color.Gainsboro;
+            this.btnResetGraphs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnResetGraphs.Font = new System.Drawing.Font("Microsoft New Tai Lue", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnResetGraphs.Location = new System.Drawing.Point(432, 7);
+            this.btnResetGraphs.Name = "btnResetGraphs";
+            this.btnResetGraphs.Size = new System.Drawing.Size(140, 44);
+            this.btnResetGraphs.TabIndex = 216;
+            this.btnResetGraphs.Text = "🧹 Reset Graphs";
+            this.btnResetGraphs.UseVisualStyleBackColor = false;
+            this.btnResetGraphs.Click += new System.EventHandler(this.btnResetGraphs_Click);
+            //
+            // lblSensorStatus
+            //
+            this.lblSensorStatus.AutoSize = true;
+            this.lblSensorStatus.Font = new System.Drawing.Font("Microsoft New Tai Lue", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSensorStatus.ForeColor = System.Drawing.Color.Red;
+            this.lblSensorStatus.Location = new System.Drawing.Point(590, 10);
+            this.lblSensorStatus.Name = "lblSensorStatus";
+            this.lblSensorStatus.Size = new System.Drawing.Size(76, 22);
+            this.lblSensorStatus.TabIndex = 217;
+            this.lblSensorStatus.Text = "● Sensor";
+            //
+            // lblControllerStatus
+            //
+            this.lblControllerStatus.AutoSize = true;
+            this.lblControllerStatus.Font = new System.Drawing.Font("Microsoft New Tai Lue", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblControllerStatus.ForeColor = System.Drawing.Color.Red;
+            this.lblControllerStatus.Location = new System.Drawing.Point(590, 32);
+            this.lblControllerStatus.Name = "lblControllerStatus";
+            this.lblControllerStatus.Size = new System.Drawing.Size(95, 22);
+            this.lblControllerStatus.TabIndex = 218;
+            this.lblControllerStatus.Text = "● Controller";
+            //
             // tabControl2
-            // 
-            this.tabControl2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.tabControl2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl2.Controls.Add(this.tabPage4);
             this.tabControl2.Controls.Add(this.tabPageMag);
-            this.tabControl2.Location = new System.Drawing.Point(3, 3);
+            this.tabControl2.Location = new System.Drawing.Point(3, 64);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
             this.tabControl2.ShowToolTips = true;
-            this.tabControl2.Size = new System.Drawing.Size(1025, 846);
+            this.tabControl2.Size = new System.Drawing.Size(1025, 785);
             this.tabControl2.TabIndex = 0;
-            // 
+            //
             // tabPage4
             // 
             this.tabPage4.AutoScroll = true;
@@ -2887,9 +3131,23 @@ namespace IGRF_Interface_Demo1._1
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(1024, 857);
             this.tabControl1.TabIndex = 0;
-            // 
+            //
+            // toolTip1
+            //
+            this.toolTip1.SetToolTip(this.btnStartAllPid, "เริ่ม PID ทั้ง 3 แกนพร้อมกัน (ใช้ค่า Kp/Ki/Kd ในช่องของแต่ละแกน)");
+            this.toolTip1.SetToolTip(this.btnStopAllPid, "หยุด PID ทุกแกนและหยุดส่งค่าไป Controller");
+            this.toolTip1.SetToolTip(this.btnApplyPidAll, "อัปเดตค่า Kp/Ki/Kd ของทุกแกนโดยไม่ต้องหยุด PID");
+            this.toolTip1.SetToolTip(this.btnResetGraphs, "ล้างกราฟทั้งหมด + รีเซ็ต PID และ Filter");
+            this.toolTip1.SetToolTip(this.StartX, "เริ่ม/หยุด PID เฉพาะแกน X");
+            this.toolTip1.SetToolTip(this.StartY, "เริ่ม/หยุด PID เฉพาะแกน Y");
+            this.toolTip1.SetToolTip(this.StartZ, "เริ่ม/หยุด PID เฉพาะแกน Z");
+            this.toolTip1.SetToolTip(this.ConnectSensor, "เชื่อมต่อ/ตัดการเชื่อมต่อ Sensor");
+            this.toolTip1.SetToolTip(this.button1, "เชื่อมต่อ/ตัดการเชื่อมต่อ Controller");
+            this.toolTip1.SetToolTip(this.ZerorizeBtn, "ส่งคำสั่ง Zero ไปที่ Sensor");
+            this.toolTip1.SetToolTip(this.Write_Btn, "เริ่ม/หยุดบันทึกข้อมูลลงไฟล์ CSV");
+            //
             // Form1
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1619, 857);
@@ -2903,6 +3161,8 @@ namespace IGRF_Interface_Demo1._1
             ((System.ComponentModel.ISupportInitialize)(this.TimeSpeed)).EndInit();
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
+            this.groupSensor2.ResumeLayout(false);
+            this.groupSensor2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -2919,6 +3179,8 @@ namespace IGRF_Interface_Demo1._1
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
             this.tabPageMag.ResumeLayout(false);
+            this.panelQuickActions.ResumeLayout(false);
+            this.panelQuickActions.PerformLayout();
             this.groupBox16.ResumeLayout(false);
             this.groupBox16.PerformLayout();
             this.groupBox15.ResumeLayout(false);
@@ -2981,6 +3243,18 @@ namespace IGRF_Interface_Demo1._1
         private System.Windows.Forms.Label label40;
         private System.Windows.Forms.Panel btnRefreshPorts1;
         private System.Windows.Forms.GroupBox groupBox8;
+        private System.Windows.Forms.GroupBox groupSensor2;
+        private System.Windows.Forms.TextBox txtSensor2Ip;
+        private System.Windows.Forms.TextBox txtSensor2Port;
+        private System.Windows.Forms.Button btnConnectSensor2;
+        private System.Windows.Forms.Label lblSensor2X;
+        private System.Windows.Forms.TextBox textSensor2X;
+        private System.Windows.Forms.Label lblSensor2Y;
+        private System.Windows.Forms.TextBox textSensor2Y;
+        private System.Windows.Forms.Label lblSensor2Z;
+        private System.Windows.Forms.TextBox textSensor2Z;
+        private System.Windows.Forms.Label lblSensor2Total;
+        private System.Windows.Forms.TextBox textSensor2Total;
         private System.Windows.Forms.Button SendBtn;
         private System.Windows.Forms.Button ConnectSensor;
         private System.Windows.Forms.Button ZerorizeBtn;
@@ -3021,6 +3295,14 @@ namespace IGRF_Interface_Demo1._1
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TabPage tabPageMag;
         private OxyPlot.WindowsForms.PlotView plotViewMag;
+        private System.Windows.Forms.Panel panelQuickActions;
+        private System.Windows.Forms.Button btnStartAllPid;
+        private System.Windows.Forms.Button btnStopAllPid;
+        private System.Windows.Forms.Button btnApplyPidAll;
+        private System.Windows.Forms.Button btnResetGraphs;
+        private System.Windows.Forms.Label lblSensorStatus;
+        private System.Windows.Forms.Label lblControllerStatus;
+        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.GroupBox groupBox16;
         private System.Windows.Forms.Button buttonSetKFR_Z;
         private System.Windows.Forms.Button btnResetKF_Z;

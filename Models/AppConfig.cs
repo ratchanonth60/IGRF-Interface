@@ -10,6 +10,7 @@ namespace IGRF_Interface.Models
         public double Kd { get; set; } = 0;
         public double MaxOutput { get; set; } = 100;
         public double MinOutput { get; set; } = -100;
+        public double Setpoint { get; set; } = 0;
     }
 
     public class AppConfig
@@ -17,6 +18,10 @@ namespace IGRF_Interface.Models
         public PidSettings PidX { get; set; } = new PidSettings();
         public PidSettings PidY { get; set; } = new PidSettings();
         public PidSettings PidZ { get; set; } = new PidSettings();
+
+        // Sensor 2 (Magson MFG Fluxgate Magnetometer ผ่าน TCP)
+        public string Sensor2Ip { get; set; } = "192.168.1.100";
+        public int Sensor2Port { get; set; } = 12345;
 
         // Helper Methods สำหรับ Save/Load
         public static void Save(AppConfig config, string path = "SystemConfig.json")

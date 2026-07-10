@@ -40,6 +40,7 @@ namespace IGRF_Interface_Demo1._1
         // 2. Services & Managers
         // ==========================================
         private readonly SerialPortManager _sensorManager = new SerialPortManager();
+        private readonly MagsonTcpClient _magsonClient = new MagsonTcpClient();
         private readonly SensorService _sensorService = new SensorService();
         private readonly SatelliteService _satService = new SatelliteService();
         private readonly CalculationService _calcService = new CalculationService();
@@ -48,6 +49,7 @@ namespace IGRF_Interface_Demo1._1
         private string ConfigFilePath => Path.Combine(Application.StartupPath, "SystemConfig.json");
 
         private GraphManager _graphX, _graphY, _graphZ;
+        private GraphManager _graphMag;
         private readonly PidController _pidX = new PidController();
         private readonly PidController _pidY = new PidController();
         private readonly PidController _pidZ = new PidController();
@@ -62,6 +64,9 @@ namespace IGRF_Interface_Demo1._1
         // Data Variables
         private double _magX_nT, _magY_nT, _magZ_nT;
         private double _RawmagX_nT, _RawmagY_nT, _RawmagZ_nT;
+        // Sensor 2 (Magson MFG Fluxgate ผ่าน TCP)
+        private double _mag2X_nT, _mag2Y_nT, _mag2Z_nT;
+        private DateTime _lastUiUpdate2 = DateTime.MinValue;
         private double _setpointX, _setpointY, _setpointZ;
         private double _outputX, _outputY, _outputZ;
         private double[,] _intensityResults; // สำหรับ Map
@@ -75,6 +80,7 @@ namespace IGRF_Interface_Demo1._1
         private Timer _timerPidX = new Timer { Interval = 100 };
         private Timer _timerPidY = new Timer { Interval = 100 };
         private Timer _timerPidZ = new Timer { Interval = 100 };
+        private Timer _statusTimer = new Timer { Interval = 1000 };
 
         // Logging
         private bool _isLogging = false;
@@ -118,9 +124,11 @@ namespace IGRF_Interface_Demo1._1
                 _graphX = new GraphManager(plotViewX, "PID X-Axis");
                 _graphY = new GraphManager(plotViewY, "PID Y-Axis");
                 _graphZ = new GraphManager(plotViewZ, "PID Z-Axis");
+                _graphMag = new GraphManager(plotViewMag, "Field Magnitude |B|");
 
                 // Init Events
                 _sensorManager.OnPacketReceived += HandleSensorPacket;
+                _magsonClient.OnDataReceived += HandleMagsonData;
 
                 timerSender.Interval = SENDER_INTERVAL;
                 timerSender.Tick += timerSender_Tick;
@@ -164,12 +172,21 @@ namespace IGRF_Interface_Demo1._1
                     }
                 };
 
+                // Status Bar Timer (Sensor/Controller indicator)
+                _statusTimer.Tick += (s, e) =>
+                {
+                    lblSensorStatus.ForeColor = _sensorManager.IsOpen ? Color.LimeGreen : Color.Red;
+                    lblControllerStatus.ForeColor = (_controllerPort != null && _controllerPort.IsOpen) ? Color.LimeGreen : Color.Red;
+                };
+                _statusTimer.Start();
+
                 // Load Config
                 LoadSystemConfig();
 
                 // Set Button Defaults
                 UpdateButtonState(ConnectSensor, false); // สมมติปุ่มชื่อ ConnectSensor
                 UpdateButtonState(button1, false); // สมมติปุ่มชื่อ buttonConnectController (แก้ให้ตรงชื่อจริง)
+                UpdateButtonState(btnConnectSensor2, false);
             }
             catch (Exception ex)
             {
@@ -221,8 +238,10 @@ namespace IGRF_Interface_Demo1._1
             _timerPidX.Stop(); _timerPidY.Stop(); _timerPidZ.Stop();
             SatPosTimer.Stop(); timerSender.Stop(); timer_sensor.Stop();
             _watchdogTimer?.Stop();
+            _statusTimer?.Stop();
 
             _sensorManager?.Disconnect();
+            _magsonClient?.Disconnect();
             if (_controllerPort != null && _controllerPort.IsOpen)
             {
                 try { _controllerPort.Close(); } catch { }
@@ -290,6 +309,10 @@ namespace IGRF_Interface_Demo1._1
                     if (!_timerPidY.Enabled) _graphY.Update(_setpointY, processed.MagY);
                     if (!_timerPidZ.Enabled) _graphZ.Update(_setpointZ, processed.MagZ);
 
+                    double measMag = Math.Sqrt(processed.MagX * processed.MagX + processed.MagY * processed.MagY + processed.MagZ * processed.MagZ);
+                    double spMag = Math.Sqrt(_setpointX * _setpointX + _setpointY * _setpointY + _setpointZ * _setpointZ);
+                    _graphMag.Update(spMag, measMag);
+
                 }));
             }
 
@@ -306,6 +329,31 @@ namespace IGRF_Interface_Demo1._1
             }
         }
 
+        // Sensor 2 (Magson) - รับข้อมูลจาก TCP background thread
+        private void HandleMagsonData(double bx, double by, double bz)
+        {
+            _mag2X_nT = bx;
+            _mag2Y_nT = by;
+            _mag2Z_nT = bz;
+
+            // UI Throttling (เหมือนกับ HandleSensorPacket)
+            if ((DateTime.Now - _lastUiUpdate2).TotalMilliseconds < UI_REFRESH_RATE_MS) return;
+            _lastUiUpdate2 = DateTime.Now;
+
+            if (this.IsHandleCreated && !this.IsDisposed)
+            {
+                this.BeginInvoke(new Action(() =>
+                {
+                    textSensor2X.Text = bx.ToString("F2");
+                    textSensor2Y.Text = by.ToString("F2");
+                    textSensor2Z.Text = bz.ToString("F2");
+
+                    double total = Math.Sqrt(bx * bx + by * by + bz * bz);
+                    textSensor2Total.Text = total.ToString("F2");
+                }));
+            }
+        }
+
         private void OpenLogWriter()
         {
             string logsDir = Path.Combine(Application.StartupPath, "logs");
@@ -314,7 +362,7 @@ namespace IGRF_Interface_Demo1._1
 
             bool isNew = !File.Exists(_logFileName) || new FileInfo(_logFileName).Length == 0;
             _logWriter = new StreamWriter(_logFileName, append: true) { AutoFlush = true };
-            if (isNew) _logWriter.Write("Timestamp,MagX,MagY,MagZ,SetX,SetY,SetZ,ErrX,ErrY,ErrZ,OutX,OutY,OutZ,KpX,KiX,KdX,KpY,KiY,KdY,KpZ,KiZ,KdZ\n");
+            if (isNew) _logWriter.Write("Timestamp,MagX,MagY,MagZ,MagTotal,SetX,SetY,SetZ,SetTotal,ErrX,ErrY,ErrZ,OutX,OutY,OutZ,KpX,KiX,KdX,KpY,KiY,KdY,KpZ,KiZ,KdZ,Mag2X,Mag2Y,Mag2Z,Mag2Total\n");
             _logDate = DateTime.Today;
         }
 
@@ -325,13 +373,18 @@ namespace IGRF_Interface_Demo1._1
             try
             {
                 string timeStamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                string dataLine = $"{timeStamp},{_magX_nT:F2},{_magY_nT:F2},{_magZ_nT:F2}," +
-                                  $"{_setpointX:F2},{_setpointY:F2},{_setpointZ:F2}," +
+                // คำนวณขนาดสนามแม่เหล็กรวม (Magnitude) ของค่าที่วัดได้และ Setpoint
+                double magTotal = Math.Sqrt(_magX_nT * _magX_nT + _magY_nT * _magY_nT + _magZ_nT * _magZ_nT);
+                double setTotal = Math.Sqrt(_setpointX * _setpointX + _setpointY * _setpointY + _setpointZ * _setpointZ);
+                double mag2Total = Math.Sqrt(_mag2X_nT * _mag2X_nT + _mag2Y_nT * _mag2Y_nT + _mag2Z_nT * _mag2Z_nT);
+                string dataLine = $"{timeStamp},{_magX_nT:F2},{_magY_nT:F2},{_magZ_nT:F2},{magTotal:F2}," +
+                                  $"{_setpointX:F2},{_setpointY:F2},{_setpointZ:F2},{setTotal:F2}," +
                                   $"{_errX:F2},{_errY:F2},{_errZ:F2}," +
                                   $"{_outputX:F2},{_outputY:F2},{_outputZ:F2}," +
                                   $"{_pidX.Kp:F3},{_pidX.Ki:F3},{_pidX.Kd:F3}," +
                                   $"{_pidY.Kp:F3},{_pidY.Ki:F3},{_pidY.Kd:F3}," +
-                                  $"{_pidZ.Kp:F3},{_pidZ.Ki:F3},{_pidZ.Kd:F3}\n";
+                                  $"{_pidZ.Kp:F3},{_pidZ.Ki:F3},{_pidZ.Kd:F3}," +
+                                  $"{_mag2X_nT:F2},{_mag2Y_nT:F2},{_mag2Z_nT:F2},{mag2Total:F2}\n";
 
                 lock (_fileLock)
                 {
@@ -411,6 +464,58 @@ namespace IGRF_Interface_Demo1._1
                 _sensorPortName = portName;
                 _sensorIntended = true;
                 _lastPacketTime = DateTime.Now;
+                UpdateButtonState(btn, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Connection Failed: {ex.Message}");
+                UpdateButtonState(btn, false);
+            }
+        }
+
+        private async void btnConnectSensor2_Click(object sender, EventArgs e)
+        {
+            Button btn = sender as Button;
+
+            // 1. ถ้าต่ออยู่แล้ว -> Disconnect
+            if (_magsonClient.IsOpen)
+            {
+                try
+                {
+                    btn.Enabled = false;
+                    await Task.Run(() => _magsonClient.Disconnect());
+                    UpdateButtonState(btn, false);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Disconnect Error: {ex.Message}");
+                    btn.Enabled = true;
+                }
+                return;
+            }
+
+            // 2. ถ้ายังไม่ต่อ -> Connect
+            try
+            {
+                string ip = txtSensor2Ip.Text.Trim();
+                if (string.IsNullOrEmpty(ip))
+                {
+                    MessageBox.Show("Please enter Sensor 2 IP address.");
+                    return;
+                }
+
+                if (!int.TryParse(txtSensor2Port.Text, out int port))
+                {
+                    MessageBox.Show("Please enter a valid Sensor 2 port number.");
+                    return;
+                }
+
+                btn.Enabled = false;
+                btn.Text = "Connecting...";
+                btn.BackColor = Color.LightYellow;
+
+                await Task.Run(() => _magsonClient.Connect(ip, port));
+
                 UpdateButtonState(btn, true);
             }
             catch (Exception ex)
@@ -883,7 +988,7 @@ namespace IGRF_Interface_Demo1._1
             else
             {
                 // 1. อัปเดตค่า PID
-                UpdatePidParams(_pidY, KpX.Text, KiX.Text, KdX.Text);
+                UpdatePidParams(_pidY, KpY.Text, KiY.Text, KdY.Text);
 
                 // 2. เริ่มคำนวณ
                 _timerPidY.Start();
@@ -921,7 +1026,7 @@ namespace IGRF_Interface_Demo1._1
                 // เปลี่ยนหน้าตาปุ่มกลับเป็น "Start"
                 if (btn != null)
                 {
-                    btn.Text = "Start PID X";
+                    btn.Text = "Start PID Z";
                     btn.BackColor = Color.LightGreen; // สีเขียว = พร้อมเริ่ม
                 }
             }
@@ -929,7 +1034,7 @@ namespace IGRF_Interface_Demo1._1
             else
             {
                 // 1. อัปเดตค่า PID
-                UpdatePidParams(_pidZ, KpX.Text, KiX.Text, KdX.Text);
+                UpdatePidParams(_pidZ, KpZ.Text, KiZ.Text, KdZ.Text);
 
                 // 2. เริ่มคำนวณ
                 _timerPidZ.Start();
@@ -943,13 +1048,58 @@ namespace IGRF_Interface_Demo1._1
                 // เปลี่ยนหน้าตาปุ่มเป็น "Stop/Pause"
                 if (btn != null)
                 {
-                    btn.Text = "Pause PID X";
+                    btn.Text = "Pause PID Z";
                     btn.BackColor = Color.Salmon; // สีแดง/ส้ม = กำลังทำงาน
                 }
             }
         }
         private void TuningZkp_Click(object sender, EventArgs e) => UpdatePidParams(_pidZ, KpZ.Text, KiZ.Text, KdZ.Text);
         private void ResetKpZ_Click(object sender, EventArgs e) => KpZ.Text = "0";
+
+        // [Quick Action Bar] ควบคุม PID ทั้ง 3 แกนพร้อมกัน
+        private void SetPidButtonVisual(Button btn, bool running, string axis)
+        {
+            if (btn == null) return;
+            btn.Text = running ? $"Pause PID {axis}" : $"Start PID {axis}";
+            btn.BackColor = running ? Color.Salmon : Color.LightGreen;
+        }
+
+        private void btnStartAllPid_Click(object sender, EventArgs e)
+        {
+            // อัปเดตพารามิเตอร์ก่อนเริ่มทุกแกน
+            UpdatePidParams(_pidX, KpX.Text, KiX.Text, KdX.Text);
+            UpdatePidParams(_pidY, KpY.Text, KiY.Text, KdY.Text);
+            UpdatePidParams(_pidZ, KpZ.Text, KiZ.Text, KdZ.Text);
+
+            if (!_timerPidX.Enabled) _timerPidX.Start();
+            if (!_timerPidY.Enabled) _timerPidY.Start();
+            if (!_timerPidZ.Enabled) _timerPidZ.Start();
+
+            if (!timerSender.Enabled && _controllerPort.IsOpen) timerSender.Start();
+
+            SetPidButtonVisual(StartX, true, "X");
+            SetPidButtonVisual(StartY, true, "Y");
+            SetPidButtonVisual(StartZ, true, "Z");
+        }
+
+        private void btnStopAllPid_Click(object sender, EventArgs e)
+        {
+            _timerPidX.Stop(); _timerPidY.Stop(); _timerPidZ.Stop();
+            timerSender.Stop();
+
+            SetPidButtonVisual(StartX, false, "X");
+            SetPidButtonVisual(StartY, false, "Y");
+            SetPidButtonVisual(StartZ, false, "Z");
+        }
+
+        private void btnApplyPidAll_Click(object sender, EventArgs e)
+        {
+            UpdatePidParams(_pidX, KpX.Text, KiX.Text, KdX.Text);
+            UpdatePidParams(_pidY, KpY.Text, KiY.Text, KdY.Text);
+            UpdatePidParams(_pidZ, KpZ.Text, KiZ.Text, KdZ.Text);
+        }
+
+        private void btnResetGraphs_Click(object sender, EventArgs e) => btnMasterReset_Click(sender, e);
 
         // ==========================================
         // 9. Config & Helpers
@@ -961,14 +1111,30 @@ namespace IGRF_Interface_Demo1._1
                 double.TryParse(KpX.Text, out double kpx); _appConfig.PidX.Kp = kpx;
                 double.TryParse(KiX.Text, out double kix); _appConfig.PidX.Ki = kix;
                 double.TryParse(KdX.Text, out double kdx); _appConfig.PidX.Kd = kdx;
+                // บันทึกขอบเขต Output และ Setpoint ของแกน X
+                double.TryParse(textLowerBoundX.Text, out double minX); _appConfig.PidX.MinOutput = minX;
+                double.TryParse(textUpperBoundX.Text, out double maxX); _appConfig.PidX.MaxOutput = maxX;
+                double.TryParse(textBoxSetpointX.Text, out double spX); _appConfig.PidX.Setpoint = spX;
 
                 double.TryParse(KpY.Text, out double kpy); _appConfig.PidY.Kp = kpy;
                 double.TryParse(KiY.Text, out double kiy); _appConfig.PidY.Ki = kiy;
                 double.TryParse(KdY.Text, out double kdy); _appConfig.PidY.Kd = kdy;
+                // บันทึกขอบเขต Output และ Setpoint ของแกน Y
+                double.TryParse(textLowerBoundY.Text, out double minY); _appConfig.PidY.MinOutput = minY;
+                double.TryParse(textUpperBoundY.Text, out double maxY); _appConfig.PidY.MaxOutput = maxY;
+                double.TryParse(textBoxSetpointY.Text, out double spY); _appConfig.PidY.Setpoint = spY;
 
                 double.TryParse(KpZ.Text, out double kpz); _appConfig.PidZ.Kp = kpz;
                 double.TryParse(KiZ.Text, out double kiz); _appConfig.PidZ.Ki = kiz;
                 double.TryParse(KdZ.Text, out double kdz); _appConfig.PidZ.Kd = kdz;
+                // บันทึกขอบเขต Output และ Setpoint ของแกน Z
+                double.TryParse(textLowerBoundZ.Text, out double minZ); _appConfig.PidZ.MinOutput = minZ;
+                double.TryParse(textUpperBoundZ.Text, out double maxZ); _appConfig.PidZ.MaxOutput = maxZ;
+                double.TryParse(textBoxSetpointZ.Text, out double spZ); _appConfig.PidZ.Setpoint = spZ;
+
+                // บันทึกค่า IP/Port ของ Sensor 2 (Magson)
+                _appConfig.Sensor2Ip = txtSensor2Ip.Text.Trim();
+                if (int.TryParse(txtSensor2Port.Text, out int s2p)) _appConfig.Sensor2Port = s2p;
 
                 AppConfig.Save(_appConfig, ConfigFilePath);
                 MessageBox.Show($"Saved to: {ConfigFilePath}");
@@ -984,6 +1150,23 @@ namespace IGRF_Interface_Demo1._1
                 KpX.Text = _appConfig.PidX.Kp.ToString(); KiX.Text = _appConfig.PidX.Ki.ToString(); KdX.Text = _appConfig.PidX.Kd.ToString();
                 KpY.Text = _appConfig.PidY.Kp.ToString(); KiY.Text = _appConfig.PidY.Ki.ToString(); KdY.Text = _appConfig.PidY.Kd.ToString();
                 KpZ.Text = _appConfig.PidZ.Kp.ToString(); KiZ.Text = _appConfig.PidZ.Ki.ToString(); KdZ.Text = _appConfig.PidZ.Kd.ToString();
+
+                // โหลดขอบเขต Output และ Setpoint ของแกน X แสดงในกล่องข้อความ
+                textLowerBoundX.Text = _appConfig.PidX.MinOutput.ToString(); textUpperBoundX.Text = _appConfig.PidX.MaxOutput.ToString(); textBoxSetpointX.Text = _appConfig.PidX.Setpoint.ToString();
+                // โหลดขอบเขต Output และ Setpoint ของแกน Y แสดงในกล่องข้อความ
+                textLowerBoundY.Text = _appConfig.PidY.MinOutput.ToString(); textUpperBoundY.Text = _appConfig.PidY.MaxOutput.ToString(); textBoxSetpointY.Text = _appConfig.PidY.Setpoint.ToString();
+                // โหลดขอบเขต Output และ Setpoint ของแกน Z แสดงในกล่องข้อความ
+                textLowerBoundZ.Text = _appConfig.PidZ.MinOutput.ToString(); textUpperBoundZ.Text = _appConfig.PidZ.MaxOutput.ToString(); textBoxSetpointZ.Text = _appConfig.PidZ.Setpoint.ToString();
+
+                // ใช้ขอบเขต Output กับ PID object ทันที เพื่อความปลอดภัย (ไม่ต้องกด Set ก็ clamp ถูกต้อง)
+                // หมายเหตุ: ไม่ตั้งค่า Setpoint ให้ _setpointX/Y/Z ที่นี่ ผู้ใช้ต้องกดปุ่ม Set เอง
+                _pidX.MinOutput = _appConfig.PidX.MinOutput; _pidX.MaxOutput = _appConfig.PidX.MaxOutput;
+                _pidY.MinOutput = _appConfig.PidY.MinOutput; _pidY.MaxOutput = _appConfig.PidY.MaxOutput;
+                _pidZ.MinOutput = _appConfig.PidZ.MinOutput; _pidZ.MaxOutput = _appConfig.PidZ.MaxOutput;
+
+                // โหลดค่า IP/Port ของ Sensor 2 (Magson)
+                txtSensor2Ip.Text = _appConfig.Sensor2Ip;
+                txtSensor2Port.Text = _appConfig.Sensor2Port.ToString();
             }
             catch { }
         }
@@ -1170,7 +1353,7 @@ namespace IGRF_Interface_Demo1._1
         private void tbx5_TextChanged(object sender, EventArgs e) { }
         private void timer_sensor_Tick(object sender, EventArgs e) { if (_sensorManager.IsOpen && !_sensorManager.IsSensorReady) try { _sensorManager.Write(new byte[] { 0x2A, 0x30, 0x30, 0x57, 0x45, 0x0D }); } catch { } } //0x2A, 0x30, 0x30, 0x57, 0x45, 0x0D
         private void cboControllerPort_SelectedIndexChanged(object sender, EventArgs e) { }
-        private void btnMasterReset_Click(object sender, EventArgs e) { _graphX?.Clear(); _graphY?.Clear(); _graphZ?.Clear(); _pidX.Reset(); _pidY.Reset(); _pidZ.Reset(); _calcService.ResetFilters(); MessageBox.Show("System Reset!"); }
+        private void btnMasterReset_Click(object sender, EventArgs e) { _graphX?.Clear(); _graphY?.Clear(); _graphZ?.Clear(); _graphMag?.Clear(); _pidX.Reset(); _pidY.Reset(); _pidZ.Reset(); _calcService.ResetFilters(); MessageBox.Show("System Reset!"); }
         private void btnResetKF_X_Click(object sender, EventArgs e) { _calcService.ResetFilterX(); debug_label_rx.Text = "Filter X reset"; }
         private void btnResetKF_Y_Click(object sender, EventArgs e) { _calcService.ResetFilterY(); debug_label_rx.Text = "Filter Y reset"; }
         private void btnResetKF_Z_Click(object sender, EventArgs e) { _calcService.ResetFilterZ(); debug_label_rx.Text = "Filter Z reset"; }
@@ -1354,13 +1537,13 @@ namespace IGRF_Interface_Demo1._1
                 if (!fileExists)
                 {
                     File.WriteAllText(snapPath,
-                        "Timestamp,MagX,MagY,MagZ\n") ;
+                        "Timestamp,MagX,MagY,MagZ,MagTotal\n") ;
                        // "RawX,RawY,RawZ,SetX,SetY,SetZ,ErrX,ErrY,ErrZ,OutX,OutY,OutZ,KpX,KiX,KdX,KpY,KiY,KdY,KpZ,KiZ,KdZ\n");
                 }
                 if (!rawfileExists)
                 {
                     File.WriteAllText(rawSnapPath,
-                        "Timestamp,RawX,RawY,RawZ\n");
+                        "Timestamp,RawX,RawY,RawZ,RawTotal\n");
                         //"SetX,SetY,SetZ,ErrX,ErrY,ErrZ,OutX,OutY,OutZ,MagX,MagY,MagZ,KpX,KiX,KdX,KpY,KiY,KdY,KpZ,KiZ,KdZ\n");
                 }
                 string dataLine;
@@ -1369,8 +1552,11 @@ namespace IGRF_Interface_Demo1._1
                 lock (_dataLock)
                 {
                     string timeStamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                    // คำนวณขนาดสนามแม่เหล็กรวมของค่า Filtered และค่า Raw
+                    double magTotal = Math.Sqrt(_magX_nT * _magX_nT + _magY_nT * _magY_nT + _magZ_nT * _magZ_nT);
+                    double rawTotal = Math.Sqrt(_RawmagX_nT * _RawmagX_nT + _RawmagY_nT * _RawmagY_nT + _RawmagZ_nT * _RawmagZ_nT);
                     dataLine =
-                        $"{timeStamp},{_magX_nT:F2},{_magY_nT:F2},{_magZ_nT:F2}\n";
+                        $"{timeStamp},{_magX_nT:F2},{_magY_nT:F2},{_magZ_nT:F2},{magTotal:F2}\n";
                     //$"{_RawmagX_nT:F2},{_RawmagY_nT:F2},{_RawmagZ_nT:F2}," +
                     //$"{_setpointX:F2},{_setpointY:F2},{_setpointZ:F2}," +
                     //$"{textBoxErrorX.Text},{textBoxErrorY.Text},{textBoxErrorZ.Text}," +
@@ -1379,7 +1565,7 @@ namespace IGRF_Interface_Demo1._1
                     //$"{KpY.Text},{KiY.Text},{KdY.Text}," +
                     //$"{KpZ.Text},{KiZ.Text},{KdZ.Text}\n";
                     rawdataLine =
-                        $"{timeStamp},{_RawmagX_nT:F2},{_RawmagY_nT:F2},{_RawmagZ_nT:F2}\n";
+                        $"{timeStamp},{_RawmagX_nT:F2},{_RawmagY_nT:F2},{_RawmagZ_nT:F2},{rawTotal:F2}\n";
                        
                         //$"{_setpointX:F2},{_setpointY:F2},{_setpointZ:F2}," +
                         //$"{textBoxErrorX.Text},{textBoxErrorY.Text},{textBoxErrorZ.Text}," +
