@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>IGRF_Interface_Demo1._1</RootNamespace>
+    <AssemblyName>IGRF Interface Demo1.1</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Product>IGRF Interface Demo1.1</Product>
+    <Copyright>Copyright ©  2021</Copyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Deterministic>true</Deterministic>
+    <Platforms>AnyCPU;x64</Platforms>
+    <ApplicationHighDpiMode>DpiUnawareGdiScaled</ApplicationHighDpiMode>
+    <ApplicationDefaultFont>Microsoft Sans Serif, 8.25pt</ApplicationDefaultFont>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Geo-1.0.0/**" />
+    <None Remove="Geo-1.0.0/**" />
+    <EmbeddedResource Remove="Geo-1.0.0/**" />
+    <Compile Remove="libs/**" />
+    <None Remove="libs/**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OxyPlot.WindowsForms" Version="2.2.0" />
+    <PackageReference Include="CoordinateSharp" Version="2.11.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.IO.Ports" Version="8.0.0" />
+    <PackageReference Include="System.Management" Version="8.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="One_Sgp4">
+      <HintPath>libs\One_Sgp4.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="Geo-1.0.0\Geo\Geo.csproj" />
+  </ItemGroup>
+
+</Project>
